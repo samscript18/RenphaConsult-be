@@ -3,63 +3,32 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from '@prisma/client';
+import { SignUpDto } from './dto/signup-user.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserDocument } from './schema/user.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
-  async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
-    const userExists = await this.prisma.user.findUnique({
-      where: { email: createUserDto.email },
-    });
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+  ) {}
+  async create(signUpDto: SignUpDto): Promise<User> {
+    const userExists = await this.findUserByEmail(signUpDto.email);
     if (userExists) {
       throw new BadRequestException(`User with this email already exists`);
     }
-    const user = await this.prisma.user.create({
-      data: createUserDto,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        profilePicture: true,
-        role: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const user = await this.userModel.create(signUpDto);
     return user;
   }
 
-  async findAll(): Promise<Partial<User>[]> {
-    return this.prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        profilePicture: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+  async findAll(): Promise<User[]> {
+    return this.userModel.find();
   }
 
-  async findOne(id: number): Promise<Partial<User>> {
+  async findOne(id: string): Promise<User> {
     try {
-      const user = await this.prisma.user.findUniqueOrThrow({
-        where: { id },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          profilePicture: true,
-          role: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
+      const user = await this.userModel.findById(id);
       return user;
     } catch (error) {
       throw new NotFoundException(`User with id ${id} is not found`, error);
@@ -68,46 +37,13 @@ export class UserService {
 
   async findUserByEmail(email: string): Promise<User> {
     try {
-      const user = await this.prisma.user.findUniqueOrThrow({
-        where: { email },
-      });
+      const user = await this.userModel.findOne({ email: email });
       return user;
     } catch (error) {
-      throw new NotFoundException(`User with email does not exists`, error);
-    }
-  }
-
-  async update(
-    id: number,
-    updateUserDto: UpdateUserDto,
-  ): Promise<Partial<User>> {
-    try {
-      const user = await this.prisma.user.update({
-        where: { id },
-        data: updateUserDto,
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          profilePicture: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
-      return user;
-    } catch (error) {
-      throw new NotFoundException(`User with id ${id} is not found`, error);
-    }
-  }
-
-  async remove(id: number): Promise<string> {
-    try {
-      await this.prisma.user.delete({
-        where: { id },
-      });
-      return `User with id ${id} has been deleted`;
-    } catch (error) {
-      throw new NotFoundException(`User with id ${id} is not found`, error);
+      throw new NotFoundException(
+        `User with email ${email} does not exists`,
+        error,
+      );
     }
   }
 }

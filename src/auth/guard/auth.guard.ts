@@ -8,13 +8,13 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { IS_PUBLIC_KEY } from './auth.decorator';
 import { Reflector } from '@nestjs/core';
-import { User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 import { ConfigService } from '@nestjs/config';
+import { User } from 'src/user/schema/user.schema';
 
 declare module 'express-serve-static-core' {
   interface Request {
-    user?: Partial<User>;
+    user: User;
   }
 }
 
@@ -52,15 +52,15 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>('jwtSecret'),
       });
-      const user = await this.userService.findOne(payload?.userId);
+      const user = await this.userService.findUserByEmail(payload?.userEmail);
 
       if (!user) {
         throw new UnauthorizedException('Unauthorized user');
       }
+
       req.user = user;
-      req.user.role = user.role;
-    } catch {
-      throw new UnauthorizedException('Invalid Token');
+    } catch (error) {
+      throw new UnauthorizedException('Invalid Token', error);
     }
     return true;
   }

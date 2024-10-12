@@ -1,5 +1,5 @@
 export default () => ({
-  databaseUrl: process.env.DATABASE_URL,
+  mongoUri: process.env.MONGO_URI,
   jwtSecret: process.env.JWT_SECRET,
   port: parseInt(process.env.PORT),
 });

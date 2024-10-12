@@ -8,11 +8,16 @@ import {
 } from 'class-validator';
 import { Role } from 'src/roles/role.enum';
 
-export class CreateUserDto {
+export class SignUpDto {
   @ApiProperty({ example: 'jane' })
   @IsString()
   @IsNotEmpty()
-  name: string;
+  firstName: string;
+
+  @ApiProperty({ example: 'doe' })
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
 
   @ApiProperty({ example: 'janedoe@gmail.com' })
   @IsEmail()
@@ -28,7 +33,7 @@ export class CreateUserDto {
   @IsOptional()
   profilePicture: string;
 
-  @IsEnum(['USER', 'ARTIST', 'ADMIN'], { each: true })
+  @IsEnum(['USER', 'ADMIN'], { each: true })
   @IsOptional()
   role: Role;
 }

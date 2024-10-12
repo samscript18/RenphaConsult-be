@@ -1,16 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { SignUpDto } from 'src/user/dto/signup-user.dto';
 import { LoginDto } from 'src/user/dto/login-user.dto';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/user/schema/user.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
     private userService: UserService,
     private jwtService: JwtService,
   ) {}
@@ -22,8 +20,8 @@ export class AuthService {
     return await bcrypt.compare(password, hashedPassword);
   }
 
-  async signUp(createUserDto: CreateUserDto): Promise<Partial<User>> {
-    return this.userService.create(createUserDto);
+  async register(signUpDto: SignUpDto): Promise<User> {
+    return this.userService.create(signUpDto);
   }
 
   async login(loginDto: LoginDto): Promise<string> {
@@ -35,6 +33,8 @@ export class AuthService {
     if (!isMatch) {
       throw new BadRequestException('Incorrect password');
     }
-    return await this.jwtService.signAsync({ userId: user.id });
+    return await this.jwtService.signAsync({
+      userEmail: user.email,
+    });
   }
 }

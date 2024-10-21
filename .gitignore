@@ -12,6 +12,10 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+
+# Ignore todo folder
+/tasks
+
 # OS
 .DS_Store
 
@@ -45,8 +49,6 @@ lerna-debug.log*
 # temp directory
 .temp
 .tmp
-
-todo.txt
 
 # Runtime data
 pids

@@ -9,6 +9,8 @@ import { AuthGuard } from './auth/guard/auth.guard';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConsultationModule } from './consultation/consultation.module';
+import { DestinationModule } from './destination/destination.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { MongooseModule } from '@nestjs/mongoose';
     }),
     AuthModule,
     UserModule,
+    DestinationModule,
+    ConsultationModule,
   ],
   controllers: [AppController],
   providers: [

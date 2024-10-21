@@ -34,6 +34,7 @@ export class AuthService {
       throw new BadRequestException('Incorrect password');
     }
     return await this.jwtService.signAsync({
+      userId: user?._id,
       userEmail: user.email,
     });
   }

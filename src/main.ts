@@ -26,6 +26,7 @@ async function bootstrap() {
     .setDescription('RenphaConsult Api Documentation')
     .setVersion('1.0.0')
     .addBearerAuth()
+    // .addServer('https://renphaconsult.onrender.com')
     .build();
   const swaggerDoc = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('/docs', app, swaggerDoc);

@@ -1,0 +1,10 @@
+User Dashboard:
+- Profile Management: Users can update personal information.
+- Travel Recommendations: Users receive personalized destination suggestions.
+- Destination Search: Users can search for travel destinations based on preferences.
+- Consultation Form: Users can submit a form to request travel consultations.
+
+Admin Dashboard:
+- Destination Management: Admin can add, edit, and delete travel destinations.
+- Consultation Management: Admin can view and respond to consultation requests.
+- User Management: Admin can manage user activities and consultations.

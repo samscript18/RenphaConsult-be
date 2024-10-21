@@ -7,6 +7,7 @@ import { SignUpDto } from './dto/signup-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schema/user.schema';
 import { Model } from 'mongoose';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -35,15 +36,29 @@ export class UserService {
     }
   }
 
-  async findUserByEmail(email: string): Promise<User> {
+  async findUserByEmail(email: string) {
     try {
-      const user = await this.userModel.findOne({ email: email });
+      const user = await this.userModel.findOne({ email });
       return user;
     } catch (error) {
       throw new NotFoundException(
         `User with email ${email} does not exists`,
         error,
       );
+    }
+  }
+
+  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    try {
+      const user = await this.userModel.findByIdAndUpdate(id, updateUserDto, {
+        new: true,
+        runValidators: true,
+      });
+      return user;
+    } catch (error) {
+      throw new NotFoundException(`User with id ${id} does not exist`, {
+        cause: error,
+      });
     }
   }
 }

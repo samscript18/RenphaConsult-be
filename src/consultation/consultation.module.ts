@@ -15,5 +15,6 @@ import { Consultation, ConsultationSchema } from './schema/consultation.schema';
   ],
   controllers: [ConsultationController],
   providers: [ConsultationService],
+  exports: [ConsultationService],
 })
 export class ConsultationModule {}

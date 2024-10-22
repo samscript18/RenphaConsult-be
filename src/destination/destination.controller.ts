@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Req,
 } from '@nestjs/common';
 import { DestinationService } from './destination.service';
 import { CreateDestinationDto } from './dto/create-destination.dto';
@@ -14,6 +15,8 @@ import { UpdateDestinationDto } from './dto/update-destination.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/roles/roles.decorator';
 import { Role } from 'src/roles/role.enum';
+import { ReviewDto } from './dto/create-review.dto';
+import { Request } from 'express';
 
 @Controller('destination')
 @ApiTags('Destination')
@@ -47,7 +50,7 @@ export class DestinationController {
   @ApiBearerAuth()
   @Get('recommend')
   @Roles(Role.USER)
-  @ApiOperation({ summary: 'Search Destinations By Location' })
+  @ApiOperation({ summary: 'Recommend Destinations By Budget' })
   recommend(@Query('recommend') budget: number) {
     return this.destinationService.recommendByBudget(budget);
   }
@@ -77,5 +80,18 @@ export class DestinationController {
   @ApiOperation({ summary: 'Delete Destination' })
   remove(@Param('id') id: string) {
     return this.destinationService.remove(id);
+  }
+
+  @ApiBearerAuth()
+  @Post(':id/reviews')
+  @Roles(Role.USER)
+  @ApiOperation({ summary: 'Add Reviews To Destination' })
+  addReview(
+    @Param('id') id: string,
+    @Body() reviewDto: ReviewDto,
+    @Req() req: Request,
+  ) {
+    const user = req.user;
+    return this.destinationService.addReview(id, reviewDto, user);
   }
 }

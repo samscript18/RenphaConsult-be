@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Jane Doe",
+    "email": "janedoe@gmail.com",
+    "phone": "123-456-7890",
+    "destination": "Golden Sands Hotel",
+    "message": "I would like to inquire about travel packages and pricing for a stay at Golden Sands Hotel.",
+    "status": "pending",
+    "response": null,
+    "respondedAt": null,
+    "consultationHistory": []
+  },
+  {
+    "name": "Femi Daniel",
+    "email": "femidaniel@example.com",
+    "phone": "987-654-3210",
+    "destination": "Mountain View Lodge",
+    "message": "Can you provide details about activities at Mountain View Lodge? Interested in hiking and tours.",
+    "status": "responded",
+    "response": "We have several hiking trails and guided tours. Our team will contact you shortly.",
+    "respondedAt": "2024-10-15T10:30:00Z",
+    "consultationHistory": ["Initial inquiry sent", "Response provided"]
+  },
+  {
+    "name": "Mark Johnson",
+    "email": "markjohnson@gmail.com",
+    "phone": "555-123-4567",
+    "destination": "Sunset Beach Resort",
+    "message": "What are the best dates to visit Sunset Beach Resort? Looking for recommendations.",
+    "status": "completed",
+    "response": "We recommend visiting during the off-peak season for the best rates and experience.",
+    "respondedAt": "2024-10-10T14:45:00Z",
+    "consultationHistory": [
+      "Inquiry received",
+      "Response sent",
+      "Consultation completed"
+    ]
+  },
+  {
+    "name": "Emily Davis",
+    "email": "emilydavis@gmail.com",
+    "phone": "444-987-6543",
+    "destination": "Pine Valley Retreat",
+    "message": "Are there any special discounts for large groups at Pine Valley Retreat?",
+    "status": "cancelled",
+    "response": null,
+    "respondedAt": null,
+    "consultationHistory": ["Initial inquiry sent", "Inquiry cancelled by user"]
+  }
+]

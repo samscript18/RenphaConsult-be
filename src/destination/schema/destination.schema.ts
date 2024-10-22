@@ -1,9 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { Review, ReviewSchema } from './review.schema';
 
 @Schema({ timestamps: true })
 export class Destination {
-  @Prop({ required: true })
+  @Prop({ unique: true, required: true })
   name: string;
 
   @Prop({ required: true })
@@ -21,8 +22,17 @@ export class Destination {
   @Prop({ required: true })
   location: string;
 
+  @Prop({ type: [ReviewSchema], default: [] })
+  reviews: Review[];
+
   @Prop({ default: 0 })
-  rating: number;
+  totalReviews: number;
+
+  @Prop({ default: 0 })
+  totalRatings: number;
+
+  @Prop({ default: 0 })
+  averageRating: number;
 }
 
 export type DestinationDocument = HydratedDocument<Destination>;

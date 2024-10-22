@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -11,6 +11,8 @@ import configuration from './config/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConsultationModule } from './consultation/consultation.module';
 import { DestinationModule } from './destination/destination.module';
+import { SeedService } from './seed/seed.service';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -32,6 +34,7 @@ import { DestinationModule } from './destination/destination.module';
     UserModule,
     DestinationModule,
     ConsultationModule,
+    SeedModule,
   ],
   controllers: [AppController],
   providers: [
@@ -46,4 +49,10 @@ import { DestinationModule } from './destination/destination.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly seedService: SeedService) {}
+
+  async onModuleInit() {
+    await this.seedService.seedDestinations();
+  }
+}

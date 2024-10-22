@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Valley View Lodge",
+    "description": "Picturesque location with breathtaking views",
+    "mainImage": "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
+    "budget": 334680,
+    "location": "Ocean Resort"
+  },
+  {
+    "name": "Apple Valley Retreat",
+    "description": "Cultural hub with vibrant local markets",
+    "mainImage": "https://images.unsplash.com/photo-1519985176271-adb1088fa94c",
+    "budget": 614077,
+    "location": "Wildlife Sanctuary"
+  },
+  {
+    "name": "Pine Valley Retreat",
+    "description": "Historic site with stunning architecture",
+    "mainImage": "https://images.unsplash.com/photo-1518709268800-7fa10cc5a0d8",
+    "budget": 589105,
+    "location": "Wildlife Sanctuary"
+  },
+  {
+    "name": "Sunrise Beach Resort",
+    "description": "Relaxing getaway surrounded by nature",
+    "mainImage": "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
+    "budget": 442851,
+    "location": "Historical Site"
+  },
+  {
+    "name": "Sunset Beach Resort",
+    "description": "Picturesque location with breathtaking views",
+    "mainImage": "https://images.unsplash.com/photo-1491557345352-5929e343eb89",
+    "budget": 428073,
+    "location": "City Hotel"
+  }
+]

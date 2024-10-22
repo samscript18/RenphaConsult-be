@@ -47,10 +47,4 @@ export class CreateDestinationDto {
   @IsString()
   @IsNotEmpty()
   location: string;
-
-  @ApiProperty({
-    example: 4,
-  })
-  @IsNumber()
-  rating: number;
 }

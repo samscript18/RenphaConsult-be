@@ -23,7 +23,7 @@ async function bootstrap() {
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('RenphaConsult API')
-    .setDescription('RenphaConsult Api Documentation')
+    .setDescription('Travel Consultation App API Documentation')
     .setVersion('1.0.0')
     .addBearerAuth()
     // .addServer('https://renphaconsult.onrender.com')

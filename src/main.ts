@@ -26,7 +26,7 @@ async function bootstrap() {
     .setDescription('Travel Consultation App API Documentation')
     .setVersion('1.0.0')
     .addBearerAuth()
-    // .addServer('https://renphaconsult.onrender.com')
+    .addServer('https://renphaconsult.onrender.com')
     .build();
   const swaggerDoc = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('/docs', app, swaggerDoc);

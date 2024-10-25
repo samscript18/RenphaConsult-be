@@ -17,7 +17,7 @@ export class ConsultationService {
 
   async create(
     createConsultationDto: CreateConsultationDto,
-  ): Promise<Consultation> {
+  ): Promise<ConsultationDocument> {
     let consultationHistory: string[];
     const data = { ...createConsultationDto, consultationHistory };
     data.consultationHistory.push(`message: ${data.message}`);
@@ -25,12 +25,12 @@ export class ConsultationService {
     return consultation;
   }
 
-  async findAll(): Promise<Consultation[]> {
+  async findAll(): Promise<ConsultationDocument[]> {
     const consultations = await this.consultationModel.find();
     return consultations;
   }
 
-  async findOne(id: string): Promise<Consultation> {
+  async findOne(id: string): Promise<ConsultationDocument> {
     try {
       const consultation = await this.consultationModel.findById(id);
       return consultation;
@@ -44,7 +44,7 @@ export class ConsultationService {
   async update(
     id: string,
     updateConsultationDto: UpdateConsultationDto,
-  ): Promise<Consultation> {
+  ): Promise<ConsultationDocument> {
     try {
       let consultationHistory: string[];
       const data = { ...updateConsultationDto, consultationHistory };

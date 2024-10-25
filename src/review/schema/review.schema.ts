@@ -1,11 +1,23 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { User } from 'src/user/schema/user.schema';
+import { DestinationDocument } from 'src/destination/schema/destination.schema';
+import { User, UserDocument } from 'src/user/schema/user.schema';
 
 @Schema({ timestamps: true })
 export class Review {
-  @Prop({ type: Types.ObjectId, ref: User.name, required: false })
-  userId: Types.ObjectId;
+  @Prop({
+    type: Types.ObjectId,
+    ref: User.name,
+    required: false,
+  })
+  user?: UserDocument;
+
+  @Prop({
+    type: Types.ObjectId,
+    ref: 'Destination',
+    required: true,
+  })
+  destination: DestinationDocument;
 
   @Prop({ required: true })
   comment: string;

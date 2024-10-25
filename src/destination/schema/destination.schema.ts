@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import { Review, ReviewSchema } from './review.schema';
+import { HydratedDocument, Types } from 'mongoose';
+import { Review } from 'src/review/schema/review.schema';
 
 @Schema({ timestamps: true })
 export class Destination {
@@ -22,7 +22,7 @@ export class Destination {
   @Prop({ required: true })
   location: string;
 
-  @Prop({ type: [ReviewSchema], default: [] })
+  @Prop({ type: [Types.ObjectId], ref: Review.name })
   reviews: Review[];
 
   @Prop({ default: 0 })

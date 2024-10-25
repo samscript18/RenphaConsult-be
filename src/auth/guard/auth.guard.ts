@@ -10,11 +10,11 @@ import { IS_PUBLIC_KEY } from './auth.decorator';
 import { Reflector } from '@nestjs/core';
 import { UserService } from 'src/user/user.service';
 import { ConfigService } from '@nestjs/config';
-import { User } from 'src/user/schema/user.schema';
+import { UserDocument } from 'src/user/schema/user.schema';
 
 declare module 'express-serve-static-core' {
   interface Request {
-    user: User;
+    user: UserDocument;
   }
 }
 

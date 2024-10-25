@@ -6,53 +6,47 @@ import {
 import { CreateDestinationDto } from './dto/create-destination.dto';
 import { UpdateDestinationDto } from './dto/update-destination.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Destination, DestinationDocument } from './schema/destination.schema';
-import { ReviewDto } from './dto/create-review.dto';
-import { User } from 'src/user/schema/user.schema';
-import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class DestinationService {
   constructor(
     @InjectModel(Destination.name)
     private readonly destinationModel: Model<DestinationDocument>,
-    private userService: UserService,
   ) {}
 
   async create(
     createDestinationDto: CreateDestinationDto,
-  ): Promise<Destination> {
+  ): Promise<DestinationDocument> {
     const destination =
       await this.destinationModel.create(createDestinationDto);
     return destination;
   }
 
-  async findAll(): Promise<Destination[]> {
+  async findAll(): Promise<DestinationDocument[]> {
     const destinations = await this.destinationModel.find();
     return destinations;
   }
 
-  async searchByLocation(location: string): Promise<Destination[]> {
+  async searchByLocation(location: string): Promise<DestinationDocument[]> {
     const destination = await this.destinationModel.find({
       location: { $regex: location, $options: 'i' },
     });
     return destination;
   }
 
-  async recommendByBudget(budget: number): Promise<Destination[]> {
+  async recommendByBudget(budget: number): Promise<DestinationDocument[]> {
     const destination = await this.destinationModel.find({
       budget: { $lte: budget },
     });
     return destination;
   }
 
-  async findOne(id: string): Promise<Destination> {
+  async findOne(id: string): Promise<DestinationDocument> {
     try {
-      const destination = await this.destinationModel.findById(id).populate({
-        path: 'reviews.userId',
-        select: 'firstName lastName email profilePicture',
-      });
+      const ID = new Types.ObjectId(id);
+      const destination = await this.destinationModel.findById(ID);
       return destination;
     } catch (error) {
       throw new NotFoundException(`Destination with id ${id} not found`, {
@@ -64,7 +58,7 @@ export class DestinationService {
   async update(
     id: string,
     updateDestinationDto: UpdateDestinationDto,
-  ): Promise<Destination> {
+  ): Promise<DestinationDocument> {
     try {
       const destination = await this.destinationModel.findByIdAndUpdate(
         id,
@@ -88,28 +82,5 @@ export class DestinationService {
         cause: error,
       });
     }
-  }
-
-  async addReview(
-    id: string,
-    reviewDto: ReviewDto,
-    user: User,
-  ): Promise<Destination> {
-    const { _id: userId } = await this.userService.findUserByEmail(user.email);
-    const destination = await this.destinationModel.findById(id);
-    if (!destination) {
-      throw new NotFoundException(`Destination with id ${id} cannot be found`);
-    }
-    destination.reviews.push({
-      userId: userId,
-      comment: reviewDto.comment,
-      rating: reviewDto.rating,
-    });
-    destination.totalReviews += 1;
-    destination.totalRatings += reviewDto.rating;
-    destination.averageRating =
-      destination.totalRatings / destination.totalReviews;
-    await destination.save();
-    return destination;
   }
 }

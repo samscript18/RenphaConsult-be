@@ -1,5 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
+import {
+  Destination,
+  DestinationDocument,
+} from 'src/destination/schema/destination.schema';
 
 @Schema({ timestamps: true })
 export class Consultation {
@@ -12,8 +16,8 @@ export class Consultation {
   @Prop()
   phone: string;
 
-  @Prop({ required: true })
-  destination: string;
+  @Prop({ type: Types.ObjectId, ref: Destination.name, required: true })
+  destination: DestinationDocument;
 
   @Prop({ required: true })
   message: string;

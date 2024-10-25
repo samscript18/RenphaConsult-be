@@ -35,7 +35,6 @@ export class AuthService {
     }
     return await this.jwtService.signAsync({
       userId: user?._id,
-      userEmail: user.email,
     });
   }
 }

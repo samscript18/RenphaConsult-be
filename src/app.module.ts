@@ -13,6 +13,7 @@ import { ConsultationModule } from './consultation/consultation.module';
 import { DestinationModule } from './destination/destination.module';
 import { SeedService } from './seed/seed.service';
 import { SeedModule } from './seed/seed.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { SeedModule } from './seed/seed.module';
     UserModule,
     DestinationModule,
     ConsultationModule,
+    ReviewModule,
     SeedModule,
   ],
   controllers: [AppController],

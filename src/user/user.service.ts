@@ -14,7 +14,7 @@ export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
-  async create(signUpDto: SignUpDto): Promise<User> {
+  async create(signUpDto: SignUpDto): Promise<UserDocument> {
     const userExists = await this.findUserByEmail(signUpDto.email);
     if (userExists) {
       throw new BadRequestException(`User with this email already exists`);
@@ -23,11 +23,11 @@ export class UserService {
     return user;
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserDocument[]> {
     return this.userModel.find();
   }
 
-  async findOne(id: string): Promise<User> {
+  async findOne(id: string): Promise<UserDocument> {
     try {
       const user = await this.userModel.findById(id);
       return user;
@@ -36,7 +36,7 @@ export class UserService {
     }
   }
 
-  async findUserByEmail(email: string) {
+  async findUserByEmail(email: string): Promise<UserDocument> {
     try {
       const user = await this.userModel.findOne({ email });
       return user;
@@ -48,7 +48,10 @@ export class UserService {
     }
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserDocument> {
     try {
       const user = await this.userModel.findByIdAndUpdate(id, updateUserDto, {
         new: true,

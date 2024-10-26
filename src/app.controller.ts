@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Public } from './auth/guard/auth.decorator';
+import { IsPublic } from './auth/guard/auth.decorator';
 import { ApiExcludeController } from '@nestjs/swagger';
 
 @Controller()
@@ -8,7 +8,7 @@ import { ApiExcludeController } from '@nestjs/swagger';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Public()
+  @IsPublic()
   @Get()
   getHello(): string {
     return this.appService.getHello();

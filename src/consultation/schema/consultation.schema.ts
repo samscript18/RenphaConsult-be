@@ -1,41 +1,27 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
-import {
-  Destination,
-  DestinationDocument,
-} from 'src/destination/schema/destination.schema';
+import { HydratedDocument } from 'mongoose';
+
+interface ConsultationHistory {
+  question: string;
+  response: string;
+}
 
 @Schema({ timestamps: true })
 export class Consultation {
   @Prop({ required: true })
-  name: string;
+  userId: string;
 
   @Prop({ required: true })
-  email: string;
-
-  @Prop()
-  phone: string;
-
-  @Prop({ type: Types.ObjectId, ref: Destination.name, required: true })
-  destination: DestinationDocument;
+  destination: string;
 
   @Prop({ required: true })
-  message: string;
-
-  @Prop({
-    default: 'pending',
-    enum: ['pending', 'responded', 'completed', 'cancelled'],
-  })
-  status: string;
+  question: string;
 
   @Prop()
   response: string;
 
-  @Prop()
-  respondedAt: Date;
-
-  @Prop()
-  consultationHistory: string[];
+  @Prop({ default: [] })
+  consultationHistory: ConsultationHistory[];
 }
 
 export type ConsultationDocument = HydratedDocument<Consultation>;

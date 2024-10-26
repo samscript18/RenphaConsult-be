@@ -11,8 +11,8 @@ import { ConsultationService } from './consultation.service';
 import { CreateConsultationDto } from './dto/create-consultation.dto';
 import { UpdateConsultationDto } from './dto/update-consultation.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Roles } from 'src/roles/roles.decorator';
-import { Role } from 'src/roles/role.enum';
+import { Auth, Roles } from 'src/auth/guard/auth.decorator';
+import { RoleNames } from 'src/user/enums';
 
 @Controller('consultation')
 @ApiTags('Consultation')
@@ -21,15 +21,18 @@ export class ConsultationController {
 
   @ApiBearerAuth()
   @Post()
-  @Roles(Role.USER)
+  @Roles([RoleNames.USER])
   @ApiOperation({ summary: 'Create Consultation' })
-  create(@Body() createConsultationDto: CreateConsultationDto) {
-    return this.consultationService.create(createConsultationDto);
+  create(
+    @Body() createConsultationDto: CreateConsultationDto,
+    @Auth('_id') userId: string,
+  ) {
+    return this.consultationService.create(createConsultationDto, userId);
   }
 
   @ApiBearerAuth()
   @Get()
-  @Roles(Role.ADMIN)
+  @Roles([RoleNames.ADMIN])
   @ApiOperation({ summary: 'Get All Consultations' })
   findAll() {
     return this.consultationService.findAll();
@@ -37,15 +40,15 @@ export class ConsultationController {
 
   @ApiBearerAuth()
   @Get(':id')
-  @Roles(Role.USER, Role.ADMIN)
-  @ApiOperation({ summary: 'Get Single Consultation' })
+  @Roles([RoleNames.USER, RoleNames.ADMIN])
+  @ApiOperation({ summary: 'Get Consultation' })
   findOne(@Param('id') id: string) {
     return this.consultationService.findOne(id);
   }
 
   @ApiBearerAuth()
   @Patch(':id')
-  @Roles(Role.ADMIN)
+  @Roles([RoleNames.ADMIN])
   @ApiOperation({ summary: 'Update Consultation' })
   update(
     @Param('id') id: string,
@@ -56,7 +59,7 @@ export class ConsultationController {
 
   @ApiBearerAuth()
   @Delete(':id')
-  @Roles(Role.USER, Role.ADMIN)
+  @Roles([RoleNames.ADMIN])
   @ApiOperation({ summary: 'Delete Consultation' })
   remove(@Param('id') id: string) {
     return this.consultationService.remove(id);

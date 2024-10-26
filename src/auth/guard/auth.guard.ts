@@ -1,68 +1,71 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { IS_PUBLIC_KEY } from './auth.decorator';
+import { IsPublic, Roles } from './auth.decorator';
 import { Reflector } from '@nestjs/core';
-import { UserService } from 'src/user/user.service';
 import { ConfigService } from '@nestjs/config';
+import { RoleNames } from 'src/user/enums';
 import { UserDocument } from 'src/user/schema/user.schema';
-
-declare module 'express-serve-static-core' {
-  interface Request {
-    user: UserDocument;
-  }
-}
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
-    private userService: UserService,
     private configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-    if (isPublic) {
-      return true;
+    const ctx = context.switchToHttp();
+    const req = ctx.getRequest<Request>();
+
+    const publicRoute = this.reflector.get(IsPublic, context.getHandler());
+    if (publicRoute) return true;
+
+    const user = await this.validateToken(req);
+    req['user'] = user;
+
+    const roles: RoleNames[] = this.reflector.get(Roles, context.getHandler());
+
+    if (roles && roles.length > 0) {
+      if (!roles.includes(user.role)) {
+        throw new UnauthorizedException(`Only ${roles.join(',')} have access`);
+      }
     }
 
-    const req: Request = context.switchToHttp().getRequest();
-    const authHeader = req.headers.authorization;
+    return true;
+  }
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Unauthorized');
-    }
-
-    const token = authHeader.split(' ')[1];
-    if (!token) {
-      throw new UnauthorizedException('No token provided');
-    }
-
+  private async validateToken(req: Request) {
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: this.configService.get<string>('jwtSecret'),
-      });
-      const user = await this.userService.findOne(payload?.userId);
+      const authHeader = req.headers['authorization'];
 
-      if (!user) {
-        throw new UnauthorizedException('Unauthorized user');
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new UnauthorizedException('Unauthorized');
       }
 
-      req.user = user;
+      const token = authHeader.split(' ')[1];
+      if (!token) {
+        throw new UnauthorizedException('No token provided');
+      }
+
+      const payload = await this.jwtService.verifyAsync<UserDocument>(token, {
+        secret: this.configService.get<string>('jwtSecret'),
+      });
+
+      if (!payload) {
+        throw new ForbiddenException('Session is invalid or has expired');
+      }
+
+      return payload as UserDocument;
     } catch (error) {
-      console.log(error);
-      throw new UnauthorizedException('Invalid Token', error);
+      throw new ForbiddenException('Session is invalid or has expired');
     }
-    return true;
   }
 }

@@ -6,7 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Role } from 'src/roles/role.enum';
+import { RoleNames } from '../enums';
 
 export class SignUpDto {
   @ApiProperty({ example: 'jane' })
@@ -33,7 +33,7 @@ export class SignUpDto {
   @IsOptional()
   profilePicture: string;
 
-  @IsEnum(['USER', 'ADMIN'], { each: true })
+  @IsEnum([RoleNames], { each: true })
   @IsOptional()
-  role: Role;
+  role: RoleNames;
 }

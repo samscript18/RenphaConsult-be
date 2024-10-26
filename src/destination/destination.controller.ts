@@ -12,8 +12,8 @@ import { DestinationService } from './destination.service';
 import { CreateDestinationDto } from './dto/create-destination.dto';
 import { UpdateDestinationDto } from './dto/update-destination.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Roles } from 'src/roles/roles.decorator';
-import { Role } from 'src/roles/role.enum';
+import { Roles } from 'src/auth/guard/auth.decorator';
+import { RoleNames } from 'src/user/enums';
 
 @Controller('destination')
 @ApiTags('Destination')
@@ -22,7 +22,7 @@ export class DestinationController {
 
   @ApiBearerAuth()
   @Post()
-  @Roles(Role.ADMIN)
+  @Roles([RoleNames.ADMIN])
   @ApiOperation({ summary: 'Add Destination' })
   create(@Body() createDestinationDto: CreateDestinationDto) {
     return this.destinationService.create(createDestinationDto);
@@ -30,7 +30,7 @@ export class DestinationController {
 
   @ApiBearerAuth()
   @Get()
-  @Roles(Role.USER)
+  @Roles([RoleNames.USER])
   @ApiOperation({ summary: 'Get All Destinations' })
   findAll() {
     return this.destinationService.findAll();
@@ -38,7 +38,7 @@ export class DestinationController {
 
   @ApiBearerAuth()
   @Get('search')
-  @Roles(Role.USER)
+  @Roles([RoleNames.USER])
   @ApiOperation({ summary: 'Search Destinations By Location' })
   search(@Query('search') location: string) {
     return this.destinationService.searchByLocation(location);
@@ -46,7 +46,7 @@ export class DestinationController {
 
   @ApiBearerAuth()
   @Get('recommend')
-  @Roles(Role.USER)
+  @Roles([RoleNames.USER])
   @ApiOperation({ summary: 'Recommend Destinations By Budget' })
   recommend(@Query('recommend') budget: number) {
     return this.destinationService.recommendByBudget(budget);
@@ -54,7 +54,7 @@ export class DestinationController {
 
   @ApiBearerAuth()
   @Get(':id')
-  @Roles(Role.USER)
+  @Roles([RoleNames.USER])
   @ApiOperation({ summary: 'Get Single Destination' })
   findOne(@Param('id') id: string) {
     return this.destinationService.findOne(id);
@@ -62,7 +62,7 @@ export class DestinationController {
 
   @ApiBearerAuth()
   @Patch(':id')
-  @Roles(Role.ADMIN)
+  @Roles([RoleNames.ADMIN])
   @ApiOperation({ summary: 'Update Destination' })
   update(
     @Param('id') id: string,
@@ -73,7 +73,7 @@ export class DestinationController {
 
   @ApiBearerAuth()
   @Delete(':id')
-  @Roles(Role.ADMIN)
+  @Roles([RoleNames.ADMIN])
   @ApiOperation({ summary: 'Delete Destination' })
   remove(@Param('id') id: string) {
     return this.destinationService.remove(id);

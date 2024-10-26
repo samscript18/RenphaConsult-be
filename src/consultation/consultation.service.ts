@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateConsultationDto } from './dto/create-consultation.dto';
 import { UpdateConsultationDto } from './dto/update-consultation.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -7,21 +7,33 @@ import {
   ConsultationDocument,
 } from './schema/consultation.schema';
 import { Model } from 'mongoose';
+import { AIService } from 'src/ai/ai.service';
 
 @Injectable()
 export class ConsultationService {
   constructor(
     @InjectModel(Consultation.name)
     private readonly consultationModel: Model<ConsultationDocument>,
+    private aiService: AIService,
   ) {}
 
   async create(
     createConsultationDto: CreateConsultationDto,
+    userId: string,
   ): Promise<ConsultationDocument> {
-    let consultationHistory: string[];
-    const data = { ...createConsultationDto, consultationHistory };
-    data.consultationHistory.push(`message: ${data.message}`);
-    const consultation = await this.consultationModel.create(data);
+    const consultation = await this.consultationModel.create({
+      userId,
+      ...createConsultationDto,
+    });
+    const generatedResponse = await this.aiService.generateResponse(
+      consultation.question,
+      consultation.destination,
+    );
+    consultation.consultationHistory.push({
+      question: createConsultationDto.question,
+      response: generatedResponse,
+    });
+    await consultation.save();
     return consultation;
   }
 
@@ -31,52 +43,26 @@ export class ConsultationService {
   }
 
   async findOne(id: string): Promise<ConsultationDocument> {
-    try {
-      const consultation = await this.consultationModel.findById(id);
-      return consultation;
-    } catch (error) {
-      throw new BadRequestException(`Consultation id ${id} does not exist`, {
-        cause: error,
-      });
-    }
+    const consultation = await this.consultationModel.findById(id);
+    return consultation;
   }
 
   async update(
     id: string,
     updateConsultationDto: UpdateConsultationDto,
   ): Promise<ConsultationDocument> {
-    try {
-      let consultationHistory: string[];
-      const data = { ...updateConsultationDto, consultationHistory };
-      data.consultationHistory.push(
-        `response: ${updateConsultationDto.response}`,
-      );
-      const updatedConsultation =
-        await this.consultationModel.findByIdAndUpdate(
-          id,
-          {
-            ...data,
-            status: 'responded',
-            respondedAt: new Date(),
-          },
-          { new: true, runValidators: true },
-        );
-      return updatedConsultation;
-    } catch (error) {
-      throw new BadRequestException(`Consultation id ${id} does not exist`, {
-        cause: error,
-      });
-    }
+    const consultation = await this.consultationModel.findById(id);
+    consultation.response = updateConsultationDto.response;
+    consultation.consultationHistory.push({
+      question: consultation.question,
+      response: updateConsultationDto.response,
+    });
+    await consultation.save();
+    return consultation;
   }
 
-  async remove(id: string): Promise<string> {
-    try {
-      await this.consultationModel.findByIdAndDelete(id);
-      return 'Consultation with id ${id} has been deleted';
-    } catch (error) {
-      throw new BadRequestException(`Consultation id ${id} does not exist`, {
-        cause: error,
-      });
-    }
+  async remove(id: string): Promise<ConsultationDocument> {
+    const consultation = this.consultationModel.findByIdAndDelete(id);
+    return consultation;
   }
 }

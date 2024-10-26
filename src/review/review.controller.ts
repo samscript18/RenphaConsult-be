@@ -6,15 +6,14 @@ import {
   Param,
   Delete,
   Put,
-  Req,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { AddReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { Roles } from 'src/roles/roles.decorator';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Role } from 'src/roles/role.enum';
-import { Request } from 'express';
+import { Auth, Roles } from 'src/auth/guard/auth.decorator';
+import { UserDocument } from 'src/user/schema/user.schema';
+import { RoleNames } from 'src/user/enums';
 
 @Controller('review')
 @ApiTags('Review')
@@ -23,20 +22,19 @@ export class ReviewController {
 
   @ApiBearerAuth()
   @Post('/destination/:destinationId')
-  @Roles(Role.USER)
+  @Roles([RoleNames.USER])
   @ApiOperation({ summary: 'Add Review To Destination' })
   addReviewToDestination(
     @Param('destinationId') destinationId: string,
     @Body() addReviewDto: AddReviewDto,
-    @Req() req: Request,
+    @Auth() user: UserDocument,
   ) {
-    const user = req.user;
     return this.reviewService.createReview(destinationId, addReviewDto, user);
   }
 
   @ApiBearerAuth()
   @Get('/destination/:destinationId')
-  @Roles(Role.USER)
+  @Roles([RoleNames.USER])
   @ApiOperation({ summary: 'Get Destination Reviews' })
   findDestinationReviews(@Param('destinationId') destinationId: string) {
     return this.reviewService.getReviews(destinationId);
@@ -44,7 +42,7 @@ export class ReviewController {
 
   @ApiBearerAuth()
   @Put(':reviewId')
-  @Roles(Role.USER)
+  @Roles([RoleNames.USER])
   @ApiOperation({ summary: 'Update Review' })
   updateReview(
     @Param('reviewId') reviewId: string,
@@ -55,7 +53,7 @@ export class ReviewController {
 
   @ApiBearerAuth()
   @Delete(':reviewId')
-  @Roles(Role.USER, Role.ADMIN)
+  @Roles([RoleNames.USER, RoleNames.ADMIN])
   @ApiOperation({ summary: 'Delete Review' })
   deleteReview(@Param('reviewId') reviewId: string) {
     return this.reviewService.deleteReview(reviewId);

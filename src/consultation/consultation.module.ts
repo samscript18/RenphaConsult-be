@@ -3,6 +3,7 @@ import { ConsultationService } from './consultation.service';
 import { ConsultationController } from './consultation.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Consultation, ConsultationSchema } from './schema/consultation.schema';
+import { AIModule } from 'src/ai/ai.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { Consultation, ConsultationSchema } from './schema/consultation.schema';
         schema: ConsultationSchema,
       },
     ]),
+    AIModule,
   ],
   controllers: [ConsultationController],
   providers: [ConsultationService],

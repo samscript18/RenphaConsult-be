@@ -1,11 +1,10 @@
-import { Controller, Get, Param, Res, Req, Put, Body } from '@nestjs/common';
+import { Controller, Get, Param, Put, Body } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Request, Response } from 'express';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User } from './schema/user.schema';
+import { User, UserDocument } from './schema/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Roles } from 'src/roles/roles.decorator';
-import { Role } from 'src/roles/role.enum';
+import { Auth, Roles } from 'src/auth/guard/auth.decorator';
+import { RoleNames } from './enums';
 
 @Controller('user')
 @ApiTags('User')
@@ -14,15 +13,15 @@ export class UserController {
 
   @ApiBearerAuth()
   @Get('profile')
-  @Roles(Role.USER)
+  @Roles([RoleNames.USER])
   @ApiOperation({ summary: 'Get Profile' })
-  getUserProfile(@Req() req: Request, @Res() res: Response) {
-    res.json(req.user);
+  getUserProfile(@Auth() user: UserDocument) {
+    return user;
   }
 
   @ApiBearerAuth()
   @Get()
-  @Roles(Role.ADMIN)
+  @Roles([RoleNames.ADMIN])
   @ApiOperation({ summary: 'Get Users' })
   async getAllUsers(): Promise<User[]> {
     return this.userService.findAll();
@@ -30,7 +29,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @Get(':id')
-  @Roles(Role.USER, Role.ADMIN)
+  @Roles([RoleNames.USER, RoleNames.ADMIN])
   @ApiOperation({ summary: 'Get Single User' })
   async getUser(@Param('id') id: string): Promise<User> {
     return this.userService.findOne(id);
@@ -38,7 +37,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @Put(':id')
-  @Roles(Role.USER)
+  @Roles([RoleNames.USER])
   @ApiOperation({ summary: 'Update Profile' })
   updateUserProfile(
     @Param('id') id: string,

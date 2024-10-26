@@ -46,7 +46,9 @@ export class DestinationService {
   async findOne(id: string): Promise<DestinationDocument> {
     try {
       const ID = new Types.ObjectId(id);
-      const destination = await this.destinationModel.findById(ID);
+      const destination = (await this.destinationModel.findById(ID)).populate(
+        'user',
+      );
       return destination;
     } catch (error) {
       throw new NotFoundException(`Destination with id ${id} not found`, {

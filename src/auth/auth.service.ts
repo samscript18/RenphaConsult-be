@@ -4,24 +4,28 @@ import { LoginDto } from 'src/user/dto/login-user.dto';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/user/schema/user.schema';
+import { UserDocument } from 'src/user/schema/user.schema';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private mailService: MailService,
   ) {}
 
-  async comparePassword(
-    password: string,
-    hashedPassword: string,
-  ): Promise<boolean> {
-    return await bcrypt.compare(password, hashedPassword);
-  }
-
-  async register(signUpDto: SignUpDto): Promise<User> {
-    return this.userService.create(signUpDto);
+  async register(signUpDto: SignUpDto): Promise<UserDocument> {
+    const user = await this.userService.create(signUpDto);
+    await this.mailService.sendMail({
+      to: user.email,
+      subject: 'RenphaConsulting - Registration Successful',
+      template: 'registration',
+      context: {
+        firstName: user.firstName,
+      },
+    });
+    return user;
   }
 
   async login(loginDto: LoginDto): Promise<string> {
@@ -34,7 +38,13 @@ export class AuthService {
       throw new BadRequestException('Incorrect password');
     }
     return await this.jwtService.signAsync({
-      userId: user?._id,
+      user,
     });
+  }
+  private async comparePassword(
+    password: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return await bcrypt.compare(password, hashedPassword);
   }
 }

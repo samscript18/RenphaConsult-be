@@ -29,7 +29,10 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto): Promise<string> {
-    const user = await this.userService.findUserByEmail(loginDto.email);
+    const user: UserDocument = await this.userService.findUserByEmail(
+      loginDto.email,
+    );
+
     const isMatch = await this.comparePassword(
       loginDto.password,
       user.password,
@@ -37,9 +40,7 @@ export class AuthService {
     if (!isMatch) {
       throw new BadRequestException('Incorrect password');
     }
-    return await this.jwtService.signAsync({
-      user,
-    });
+    return await this.jwtService.signAsync({ ...user.toObject() });
   }
   private async comparePassword(
     password: string,

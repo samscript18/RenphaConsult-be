@@ -29,6 +29,7 @@ export class AuthGuard implements CanActivate {
     if (publicRoute) return true;
 
     const user = await this.validateToken(req);
+
     req['user'] = user;
 
     const roles: RoleNames[] = this.reflector.get(Roles, context.getHandler());

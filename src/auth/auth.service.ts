@@ -15,17 +15,18 @@ export class AuthService {
     private mailService: MailService,
   ) {}
 
-  async register(signUpDto: SignUpDto): Promise<UserDocument> {
-    const user = await this.userService.create(signUpDto);
+  async register(signUpDto: SignUpDto): Promise<Partial<UserDocument>> {
+    const { _id, firstName, lastName, email, role, profilePicture, __v } =
+      await this.userService.create(signUpDto);
     await this.mailService.sendMail({
-      to: user.email,
+      to: email,
       subject: 'RenphaConsulting - Registration Successful',
       template: 'registration',
       context: {
-        firstName: user.firstName,
+        firstName,
       },
     });
-    return user;
+    return { _id, firstName, lastName, email, role, profilePicture, __v };
   }
 
   async login(loginDto: LoginDto): Promise<string> {

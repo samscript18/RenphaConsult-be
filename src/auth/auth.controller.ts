@@ -13,7 +13,7 @@ import { LoginDto } from 'src/user/dto/login-user.dto';
 import { Response } from 'express';
 import { IsPublic } from './guard/auth.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User } from 'src/user/schema/user.schema';
+import { UserDocument } from 'src/user/schema/user.schema';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -23,7 +23,7 @@ export class AuthController {
   @IsPublic()
   @Post('signup')
   @ApiOperation({ summary: 'Register' })
-  async signUp(@Body() signUpDto: SignUpDto): Promise<User> {
+  async signUp(@Body() signUpDto: SignUpDto): Promise<Partial<UserDocument>> {
     signUpDto.password = await this.hashPassword(signUpDto.password);
     return this.authService.register(signUpDto);
   }

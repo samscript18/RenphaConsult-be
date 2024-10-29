@@ -24,12 +24,12 @@ export class UserService {
   }
 
   async findAll(): Promise<UserDocument[]> {
-    return this.userModel.find();
+    return this.userModel.find({}, '-password');
   }
 
   async findOne(id: string): Promise<UserDocument> {
     try {
-      const user = await this.userModel.findById(id);
+      const user = await this.userModel.findById(id, '-password');
       return user;
     } catch (error) {
       throw new NotFoundException(`User with id ${id} is not found`, error);
@@ -37,7 +37,7 @@ export class UserService {
   }
 
   async findUserByEmail(email: string): Promise<UserDocument> {
-    const user = await this.userModel.findOne({ email });
+    const user = await this.userModel.findOne({ email }, '-password');
     return user;
   }
 
@@ -49,6 +49,7 @@ export class UserService {
       const user = await this.userModel.findByIdAndUpdate(id, updateUserDto, {
         new: true,
         runValidators: true,
+        select: '-password',
       });
       return user;
     } catch (error) {

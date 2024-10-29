@@ -39,29 +39,32 @@ export class ConsultationController {
   }
 
   @ApiBearerAuth()
-  @Get(':id')
+  @Get(':consultationId')
   @Roles([RoleNames.USER, RoleNames.ADMIN])
   @ApiOperation({ summary: 'Get Consultation' })
-  findOne(@Param('id') id: string) {
-    return this.consultationService.findOne(id);
+  findOne(@Param('consultationId') consultationId: string) {
+    return this.consultationService.findOne(consultationId);
   }
 
   @ApiBearerAuth()
-  @Patch(':id')
+  @Patch(':consultationId')
   @Roles([RoleNames.ADMIN])
   @ApiOperation({ summary: 'Update Consultation' })
   update(
-    @Param('id') id: string,
+    @Param('consultationId') consultationId: string,
     @Body() updateConsultationDto: UpdateConsultationDto,
   ) {
-    return this.consultationService.update(id, updateConsultationDto);
+    return this.consultationService.update(
+      consultationId,
+      updateConsultationDto,
+    );
   }
 
   @ApiBearerAuth()
-  @Delete(':id')
+  @Delete(':consultationId')
   @Roles([RoleNames.ADMIN])
   @ApiOperation({ summary: 'Delete Consultation' })
-  remove(@Param('id') id: string) {
-    return this.consultationService.remove(id);
+  remove(@Param('consultationId') consultationId: string) {
+    return this.consultationService.remove(consultationId);
   }
 }

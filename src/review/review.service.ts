@@ -41,9 +41,11 @@ export class ReviewService {
 
   async getReviews(destinationId: string) {
     const id = new Types.ObjectId(destinationId);
-    const reviews = await this.reviewModel.find({
-      destination: id,
-    });
+    const reviews = await this.reviewModel
+      .find({
+        destination: id,
+      })
+      .populate({ path: 'user', select: '-password' });
     return reviews;
   }
 

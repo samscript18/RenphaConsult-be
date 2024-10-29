@@ -27,33 +27,37 @@ export class UserService {
     return this.userModel.find({}, '-password');
   }
 
-  async findOne(id: string): Promise<UserDocument> {
+  async findOne(userId: string): Promise<UserDocument> {
     try {
-      const user = await this.userModel.findById(id, '-password');
+      const user = await this.userModel.findById(userId, '-password');
       return user;
     } catch (error) {
-      throw new NotFoundException(`User with id ${id} is not found`, error);
+      throw new NotFoundException(`User with id ${userId} is not found`, error);
     }
   }
 
   async findUserByEmail(email: string): Promise<UserDocument> {
-    const user = await this.userModel.findOne({ email }, '-password');
+    const user = await this.userModel.findOne({ email });
     return user;
   }
 
   async updateUser(
-    id: string,
+    userId: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UserDocument> {
     try {
-      const user = await this.userModel.findByIdAndUpdate(id, updateUserDto, {
-        new: true,
-        runValidators: true,
-        select: '-password',
-      });
+      const user = await this.userModel.findByIdAndUpdate(
+        userId,
+        updateUserDto,
+        {
+          new: true,
+          runValidators: true,
+          select: '-password',
+        },
+      );
       return user;
     } catch (error) {
-      throw new NotFoundException(`User with id ${id} does not exist`, {
+      throw new NotFoundException(`User with id ${userId} does not exist`, {
         cause: error,
       });
     }

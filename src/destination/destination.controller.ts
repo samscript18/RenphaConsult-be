@@ -53,29 +53,29 @@ export class DestinationController {
   }
 
   @ApiBearerAuth()
-  @Get(':id')
+  @Get(':destinationId')
   @Roles([RoleNames.USER])
   @ApiOperation({ summary: 'Get Single Destination' })
-  findOne(@Param('id') id: string) {
-    return this.destinationService.findOne(id);
+  findOne(@Param('destinationId') destinationId: string) {
+    return this.destinationService.findOne(destinationId);
   }
 
   @ApiBearerAuth()
-  @Patch(':id')
+  @Patch(':destinationId')
   @Roles([RoleNames.ADMIN])
   @ApiOperation({ summary: 'Update Destination' })
   update(
-    @Param('id') id: string,
+    @Param('destinationId') destinationId: string,
     @Body() updateDestinationDto: UpdateDestinationDto,
   ) {
-    return this.destinationService.update(id, updateDestinationDto);
+    return this.destinationService.update(destinationId, updateDestinationDto);
   }
 
   @ApiBearerAuth()
-  @Delete(':id')
+  @Delete(':destinationId')
   @Roles([RoleNames.ADMIN])
   @ApiOperation({ summary: 'Delete Destination' })
-  remove(@Param('id') id: string) {
-    return this.destinationService.remove(id);
+  remove(@Param('destinationId') destinationId: string) {
+    return this.destinationService.remove(destinationId);
   }
 }

@@ -43,46 +43,53 @@ export class DestinationService {
     return destination;
   }
 
-  async findOne(id: string): Promise<DestinationDocument> {
+  async findOne(destinationId: string): Promise<DestinationDocument> {
     try {
-      const ID = new Types.ObjectId(id);
-      const destination = (await this.destinationModel.findById(ID)).populate(
-        'user',
-      );
+      const ID = new Types.ObjectId(destinationId);
+      const destination = await this.destinationModel.findById(ID);
       return destination;
     } catch (error) {
-      throw new NotFoundException(`Destination with id ${id} not found`, {
-        cause: error,
-      });
+      throw new NotFoundException(
+        `Destination with id ${destinationId} not found`,
+        {
+          cause: error,
+        },
+      );
     }
   }
 
   async update(
-    id: string,
+    destinationId: string,
     updateDestinationDto: UpdateDestinationDto,
   ): Promise<DestinationDocument> {
     try {
       const destination = await this.destinationModel.findByIdAndUpdate(
-        id,
+        destinationId,
         updateDestinationDto,
         { new: true, runValidators: true },
       );
       return destination;
     } catch (error) {
-      throw new NotFoundException(`Destination with id ${id} not found`, {
-        cause: error,
-      });
+      throw new NotFoundException(
+        `Destination with id ${destinationId} not found`,
+        {
+          cause: error,
+        },
+      );
     }
   }
 
-  async remove(id: string): Promise<string> {
+  async remove(destinationId: string): Promise<string> {
     try {
-      await this.destinationModel.findByIdAndDelete(id);
-      return `Destination with id ${id} has been deleted`;
+      await this.destinationModel.findByIdAndDelete(destinationId);
+      return `Destination with id ${destinationId} has been deleted`;
     } catch (error) {
-      throw new BadRequestException(`Destination with id ${id} not found`, {
-        cause: error,
-      });
+      throw new BadRequestException(
+        `Destination with id ${destinationId} not found`,
+        {
+          cause: error,
+        },
+      );
     }
   }
 }

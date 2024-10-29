@@ -42,16 +42,16 @@ export class ConsultationService {
     return consultations;
   }
 
-  async findOne(id: string): Promise<ConsultationDocument> {
-    const consultation = await this.consultationModel.findById(id);
+  async findOne(consultationId: string): Promise<ConsultationDocument> {
+    const consultation = await this.consultationModel.findById(consultationId);
     return consultation;
   }
 
   async update(
-    id: string,
+    consultationId: string,
     updateConsultationDto: UpdateConsultationDto,
   ): Promise<ConsultationDocument> {
-    const consultation = await this.consultationModel.findById(id);
+    const consultation = await this.consultationModel.findById(consultationId);
     consultation.response = updateConsultationDto.response;
     consultation.consultationHistory.push({
       question: consultation.question,
@@ -61,8 +61,9 @@ export class ConsultationService {
     return consultation;
   }
 
-  async remove(id: string): Promise<ConsultationDocument> {
-    const consultation = this.consultationModel.findByIdAndDelete(id);
+  async remove(consultationId: string): Promise<ConsultationDocument> {
+    const consultation =
+      this.consultationModel.findByIdAndDelete(consultationId);
     return consultation;
   }
 }

@@ -33,6 +33,9 @@ export class AuthService {
     const user: UserDocument = await this.userService.findUserByEmail(
       loginDto.email,
     );
+    if (!user) {
+      throw new BadRequestException('Invalid login credentials');
+    }
 
     const isMatch = await this.comparePassword(
       loginDto.password,

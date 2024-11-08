@@ -29,6 +29,7 @@ export class ConsultationService {
       consultation.question,
       consultation.destination,
     );
+    consultation.response = generatedResponse;
     consultation.consultationHistory.push({
       question: createConsultationDto.question,
       response: generatedResponse,

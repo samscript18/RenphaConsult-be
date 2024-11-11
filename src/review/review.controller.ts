@@ -34,7 +34,7 @@ export class ReviewController {
 
   @ApiBearerAuth()
   @Get('/destination/:destinationId')
-  @Roles([RoleNames.USER])
+  @Roles([RoleNames.USER,RoleNames.ADMIN])
   @ApiOperation({ summary: 'Get Destination Reviews' })
   findDestinationReviews(@Param('destinationId') destinationId: string) {
     return this.reviewService.getReviews(destinationId);

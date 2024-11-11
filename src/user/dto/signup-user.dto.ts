@@ -33,7 +33,7 @@ export class SignUpDto {
   @IsOptional()
   profilePicture: string;
 
-  @IsEnum([RoleNames], { each: true })
+  @IsEnum(RoleNames, { each: true })
   @IsOptional()
   role: RoleNames;
 }

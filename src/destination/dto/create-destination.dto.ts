@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, IsArray } from 'class-validator';
 
 export class CreateDestinationDto {
   @ApiProperty({ example: 'Olumo Rock' })
@@ -30,7 +30,7 @@ export class CreateDestinationDto {
       'https://res.cloudinary.com/wdnapc0cs/image/upload/v1728733644/differentImage.jpg',
     ],
   })
-  @IsString()
+  @IsArray()
   @IsOptional()
   gallery: string[];
 

@@ -38,7 +38,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @Put(':userId')
-  @Roles([RoleNames.USER])
+  @Roles([RoleNames.USER,RoleNames.ADMIN])
   @ApiOperation({ summary: 'Update Profile' })
   updateUserProfile(
     @Param('userId') userId: string,

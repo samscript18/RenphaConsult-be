@@ -21,6 +21,6 @@ Ensure the information is concise, accurate, and valuable for planning an enjoya
     const { response } = await this.geminiAi.generateContent(
       this.GENERATOR_QUERY(question, destination),
     );
-    return response;
+    return response.text();
   }
 }

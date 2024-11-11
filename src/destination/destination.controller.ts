@@ -30,7 +30,7 @@ export class DestinationController {
 
   @ApiBearerAuth()
   @Get()
-  @Roles([RoleNames.USER])
+  @Roles([RoleNames.USER,RoleNames.ADMIN])
   @ApiOperation({ summary: 'Get All Destinations' })
   findAll() {
     return this.destinationService.findAll();
@@ -54,7 +54,7 @@ export class DestinationController {
 
   @ApiBearerAuth()
   @Get(':destinationId')
-  @Roles([RoleNames.USER])
+  @Roles([RoleNames.USER,RoleNames.ADMIN])
   @ApiOperation({ summary: 'Get Single Destination' })
   findOne(@Param('destinationId') destinationId: string) {
     return this.destinationService.findOne(destinationId);

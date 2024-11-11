@@ -13,7 +13,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @Get('profile')
-  @Roles([RoleNames.USER])
+  @Roles([RoleNames.USER,RoleNames.ADMIN])
   @ApiOperation({ summary: 'Get Profile' })
   getUserProfile(@Auth() user: UserDocument) {
     const { _id, firstName, lastName, email, profilePicture, role, __v } = user;
